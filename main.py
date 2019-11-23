@@ -56,7 +56,7 @@ def enter_listener() :
 
 
 def main():
-    """Program főkontrollere"""
+    """Program főkontrollere ami elindítja a játékot"""
 
     grid_size = 30
     if grid_size != 20:

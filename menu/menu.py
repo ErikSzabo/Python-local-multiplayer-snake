@@ -38,7 +38,7 @@ class Menu:
         Utils.text_printer(self.surface, "Játékos nevek...", 20, color, (self.surface.get_width()/2, 330))
 
         centery = 380
-        for  i in range(self.player_num):
+        for i in range(self.player_num):
             Utils.input_box(self.surface, 300, 60, centery, colors[i+2])
             Utils.text_printer(self.surface, self.player_names[i], 20, (0, 0, 0), (self.surface.get_width()/2, centery))
             center_rect = Image.menu_control[i].get_rect(center=(self.surface.get_width()/2 - 110, centery))

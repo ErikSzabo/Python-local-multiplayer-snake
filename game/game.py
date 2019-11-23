@@ -23,7 +23,7 @@ class Game:
         self.food.recreate(self.players, self.super_food)
         
         highscores = Utils.load_highscores()
-        if highscores != []:
+        if highscores:
             self.highscore = highscores[0].score
 
     def start_game(self, display):
@@ -33,9 +33,11 @@ class Game:
         display: DisplayMonitor
         """
 
-        quit = False
+        end = False
         timer = pygame.time.Clock()
-        while not quit:
+        pygame.event.set_allowed(pygame.KEYDOWN)
+
+        while not end:
             # 60 FPS
             timer.tick(60)
 
@@ -44,7 +46,7 @@ class Game:
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        quit = True
+                        end = True
                 
                 if event.type == pygame.KEYDOWN:
                     for player in self.players:
@@ -58,7 +60,7 @@ class Game:
                 # ha saját magába, vagy a falba ment, akkor a játéknak vége
                 if player.detect_self_collision() or player.detect_wall_collision(display.width, display.height, self.field_start_y):
                     player.is_lost = True
-                    quit = True
+                    end = True
                     winsound.PlaySound("sounds/dead.wav", 1)
     
                 # új highscore beállitása ha valamelyik player meghaladta az eddigi legmagasabbat
@@ -91,7 +93,7 @@ class Game:
                 for i in range(len(self.players)):
                     if self.players[i].detect_enemy_collision(self.players[j]):
                         self.players[i].is_lost = True
-                        quit = True
+                        end = True
                         winsound.PlaySound("sounds/dead.wav", 1)
                     j -= 1
 

@@ -17,7 +17,7 @@ class Snake:
         self.score = 0
         self.length = 3
         self.direction = Direction.DOWN
-        self.velocity = 3 + round(size/20)
+        self.velocity = 3 + round(size / 20)
         self.key_pressed = False
         self.is_lost = False
         self.control = control
@@ -31,14 +31,14 @@ class Snake:
         score_breakpoints = [100, 90, 70, 50, 30, 20, 10]
         velocities = [10, 9, 8, 7, 6, 5, 4]
         for i in range(len(velocities)):
-            velocities[i] = round(velocities[i] + (self.size/20)) 
+            velocities[i] = round(velocities[i] + (self.size / 20))
 
         for i in range(len(score_breakpoints)):
             if self.score >= score_breakpoints[i]:
                 self.velocity = velocities[i]
                 break
 
-    def detect_wall_collision(self, win_width, win_height, first_y) :
+    def detect_wall_collision(self, win_width, win_height, first_y):
         """Visszatér igaz/hamis értékkel attől függően, hogy a játékos falnak ütközött-e"""
 
         if self.direction == Direction.LEFT:
@@ -49,7 +49,7 @@ class Snake:
             return self.y + self.size > win_height
         elif self.direction == Direction.UP:
             return self.y < first_y
-    
+
     def detect_food_collision(self, apple):
         """
         Visszatér igaz/hamis értékkel attől függően, hogy a játékos almának ütközött-e
@@ -61,7 +61,7 @@ class Snake:
         apple_rect = pygame.Rect(apple.x, apple.y, apple.size, apple.size)
         return head_rect.colliderect(apple_rect)
 
-    def detect_self_collision(self) :
+    def detect_self_collision(self):
         """Visszatér igaz/hamis értékkel attől függően, hogy a játékos magába ütközött-e"""
 
         head_rect = pygame.Rect(self.x, self.y, self.size, self.size)
@@ -69,7 +69,7 @@ class Snake:
             if head_rect.colliderect(body_rect):
                 return True
         return False
-    
+
     def detect_enemy_collision(self, enemy_snake):
         """
         Visszatér igaz/hamis értékkel attől függően, hogy a játékos másik játékosba ütközött-e
@@ -119,8 +119,8 @@ class Snake:
             return Direction.UP
         elif self.direction == Direction.UP:
             return Direction.DOWN
-    
-    def controlled_move(self, event) :
+
+    def controlled_move(self, event):
         """
         Elmozgatja a játékost irányítóbillentyűtől függően
         Paraméterek:
@@ -135,14 +135,14 @@ class Snake:
             if event.key == self.control[i]:
                 new_direction = i
                 break
-        
+
         if new_direction == self.direction or new_direction == self.get_reverse_direction():
             return
-        
+
         if self.direction == Direction.LEFT:
             self.x -= self.x - self.x // self.size * self.size
         elif self.direction == Direction.RIGHT:
-            self.x = self.x // self.size * self.size + self.size 
+            self.x = self.x // self.size * self.size + self.size
         elif self.direction == Direction.DOWN:
             self.y = self.y // self.size * self.size + self.size
         elif self.direction == Direction.UP:
@@ -152,10 +152,9 @@ class Snake:
         rotate_point.reverse()
         self.add_rotate_point(rotate_point)
 
-        self.direction = new_direction
+        self.direction = Direction(new_direction)
         self.move()
         self.key_pressed = True
-
 
     def move(self):
         """Mozgatja a játékost a jelenlegi irányába"""
@@ -185,19 +184,19 @@ class Snake:
 
         # 4. Visszafele haladva a forgáspontok iránya mentén haladva elkezdjük felépíteni a kígyó testét téglalapokból
         i = 0
-        for i in range(len(self.rotate_points)-1, 0, -1):
+        for i in range(len(self.rotate_points) - 1, 0, -1):
             # Ha elfogyott a kívánt hossz, nem építjük tovább akkor sem, ha van még forgáspont
             if length_in_pixels == 0:
                 break
-            
+
             # Felvesszük a forgáspont kezdő koordinátáit és irányát
             start_x = self.rotate_points[i].x
             start_y = self.rotate_points[i].y
             to_direction = self.rotate_points[i].direction
             # Az előtte lévőét is
-            end_x = self.rotate_points[i-1].x
-            end_y = self.rotate_points[i-1].y
-            end_direction = self.rotate_points[i-1].direction
+            end_x = self.rotate_points[i - 1].x
+            end_y = self.rotate_points[i - 1].y
+            end_direction = self.rotate_points[i - 1].direction
 
             # Iránytól, és maradék hossztól függően megépítjük a téglalapokat
             if to_direction == Direction.LEFT:
@@ -205,7 +204,7 @@ class Snake:
                     body_rect = pygame.Rect(end_x, end_y, start_x - end_x, self.size)
                     self.body_rects.append(body_rect)
                     length_in_pixels -= start_x - end_x
-                    self._setup_rotate_part(to_direction, end_direction, end_x, end_y)
+                    self.__setup_rotate_part(to_direction, end_direction, end_x, end_y)
                 else:
                     body_rect = pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, self.size)
                     self.body_rects.append(body_rect)
@@ -215,7 +214,7 @@ class Snake:
                     body_rect = pygame.Rect(start_x + self.size, start_y, end_x - start_x, self.size)
                     self.body_rects.append(body_rect)
                     length_in_pixels -= end_x - start_x
-                    self._setup_rotate_part(to_direction, end_direction, end_x, end_y)
+                    self.__setup_rotate_part(to_direction, end_direction, end_x, end_y)
                 else:
                     body_rect = pygame.Rect(start_x + self.size, start_y, length_in_pixels, self.size)
                     self.body_rects.append(body_rect)
@@ -225,7 +224,7 @@ class Snake:
                     body_rect = pygame.Rect(start_x, start_y + self.size, self.size, end_y - start_y)
                     self.body_rects.append(body_rect)
                     length_in_pixels -= end_y - start_y
-                    self._setup_rotate_part(to_direction, end_direction, end_x, end_y)
+                    self.__setup_rotate_part(to_direction, end_direction, end_x, end_y)
                 else:
                     body_rect = pygame.Rect(start_x, start_y + self.size, self.size, length_in_pixels)
                     self.body_rects.append(body_rect)
@@ -235,17 +234,18 @@ class Snake:
                     body_rect = pygame.Rect(end_x, end_y, self.size, start_y - end_y)
                     self.body_rects.append(body_rect)
                     length_in_pixels -= start_y - end_y
-                    self._setup_rotate_part(to_direction, end_direction, end_x, end_y)
+                    self.__setup_rotate_part(to_direction, end_direction, end_x, end_y)
                 else:
-                    body_rect = pygame.Rect(end_x, end_y - length_in_pixels + start_y - end_y, self.size, length_in_pixels)
+                    body_rect = pygame.Rect(end_x, end_y - length_in_pixels + start_y - end_y, self.size,
+                                            length_in_pixels)
                     self.body_rects.append(body_rect)
                     length_in_pixels = 0
 
         # 5. Ha még maradt testhossz, de nincs további forgáspont, mint viszonyítási alap
         if length_in_pixels > 0:
-            start_x = self.rotate_points[i-1].x
-            start_y = self.rotate_points[i-1].y
-            to_direction = self.rotate_points[i-1].direction
+            start_x = self.rotate_points[i - 1].x
+            start_y = self.rotate_points[i - 1].y
+            to_direction = self.rotate_points[i - 1].direction
             if to_direction == Direction.LEFT:
                 body_rect = pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, self.size)
                 self.body_rects.append(body_rect)
@@ -260,11 +260,11 @@ class Snake:
                 self.body_rects.append(body_rect)
 
         # 6. A továbbiakban teljesen haszontalan forgáspontoktól megszabadulunk
-        self.rotate_points = self.rotate_points[i-1:]
+        self.rotate_points = self.rotate_points[i - 1:]
         # 7. A fent hozzáadatot forgáspontot (fej) töröljük, mert később változni fog a koordinátája
         self.rotate_points.pop()
 
-    def _setup_rotate_part(self, direction, other_direction, x, y):
+    def __setup_rotate_part(self, direction, other_direction, x, y):
         """
         Beállítja az adott forgáspontra szükséges képet
         Paraméterek:
@@ -299,6 +299,7 @@ class Snake:
             rotate_part = RotatePart(x, y, self.rotate_images[2])
             self.rotate_parts.append(rotate_part)
 
+
 class RotatePart:
     """A forgáspontra helyezett képet és koordinátát tárolja"""
 
@@ -306,6 +307,7 @@ class RotatePart:
         self.x = x
         self.y = y
         self.image = image
+
 
 class RotatePoint:
     """Forgáspontok létrehozásáért felelős osztály"""
@@ -315,7 +317,7 @@ class RotatePoint:
         self.y = y
         self.direction = direction
 
-    def reverse(self) :
+    def reverse(self):
         """Ellentétesre váltja a forgáspont irányát"""
 
         if self.direction == Direction.LEFT:
