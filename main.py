@@ -4,6 +4,7 @@ from game.game import Game
 from game.snake import Snake
 from game.end import EndScreen
 from utils import Image, DisplayMonitor
+from game.enums import Color
 
 pygame.init()
 
@@ -18,7 +19,7 @@ def player_init(menu, display, grid_size):
     """
     players = []
     starting_x = [display.width - grid_size * 5, grid_size * 5]
-    colors = [(64, 138, 74), (138, 127, 64)]
+    colors = [Color.GREEN, Color.ORANGE]
     control = [
         [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP],
         [pygame.K_a, pygame.K_d, pygame.K_s, pygame.K_w]

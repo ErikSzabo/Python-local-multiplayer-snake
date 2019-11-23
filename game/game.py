@@ -2,6 +2,7 @@ import pygame
 import winsound
 from utils import Utils, Image
 from game.food import Food, SuperFood
+from game.enums import Color
 
 class Game:
     """Játékmenetet vezérlő osztály"""
@@ -119,9 +120,9 @@ class Game:
         display.window.fill((20,20,20))
 
         for x in range(0, display.width+1, self.grid_size):
-            pygame.draw.line(display.window, (30,30,30), (x, self.field_start_y), (x, display.height))
+            pygame.draw.line(display.window, Color.LINE, (x, self.field_start_y), (x, display.height))
         for j in range(self.field_start_y, display.height+1, self.grid_size):
-            pygame.draw.line(display.window, (30,30,30), (0, j), (display.width, j))
+            pygame.draw.line(display.window, Color.LINE, (0, j), (display.width, j))
         
         self.food.draw(display.window)
         
@@ -135,7 +136,7 @@ class Game:
         for i in range(len(self.players)):
             Utils.text_printer(display.window, "{}: {}".format(self.players[i].name, self.players[i].score), 30, self.players[i].color, (x[i], 35))
             
-        Utils.text_printer(display.window, "HIGHSCORE", 30, (200,200,200), (display.real_width / 2, 20))
-        Utils.text_printer(display.window, str(self.highscore), 30, (200,200,200), (display.real_width / 2, 50))
+        Utils.text_printer(display.window, "HIGHSCORE", 30, Color.WHITE, (display.real_width / 2, 20))
+        Utils.text_printer(display.window, str(self.highscore), 30, Color.WHITE, (display.real_width / 2, 50))
 
         pygame.display.update()

@@ -1,6 +1,5 @@
 import pygame
-
-from game.snake import Snake
+from game.enums import Color
 from utils import Utils, Stat
 
 
@@ -21,28 +20,28 @@ class EndScreen:
         window: pygame.Surface amire rajzol
         """
 
-        window.fill((20, 20, 20))
+        window.fill(Color.BACKGROUND)
 
         if len(self.players) > 1:
             if self.players[0].is_lost and self.players[1].is_lost:
                 if self.players[0].score == self.players[1].score:
-                    Utils.text_printer(window, "Döntetlen!", 40, (200, 200, 200), (window.get_width() / 2, 60))
+                    Utils.text_printer(window, "Döntetlen!", 40, Color.WHITE, (window.get_width() / 2, 60))
                 else:
                     name = self.players[0].name if self.players[0].score > self.players[1].score else self.players[1].name
-                    Utils.text_printer(window, "Nyertes: {}".format(name), 40, (200, 200, 200), (window.get_width() / 2, 60))
+                    Utils.text_printer(window, "Nyertes: {}".format(name), 40, Color.WHITE, (window.get_width() / 2, 60))
             elif self.players[0].is_lost:
-                Utils.text_printer(window, "Nyertes: {}".format(self.players[1].name), 40, (200, 200, 200), (window.get_width()/2, 60))
+                Utils.text_printer(window, "Nyertes: {}".format(self.players[1].name), 40, Color.WHITE, (window.get_width()/2, 60))
             elif self.players[1].is_lost:
-                Utils.text_printer(window, "Nyertes: {}".format(self.players[0].name), 40, (200, 200, 200), (window.get_width()/2, 60))
+                Utils.text_printer(window, "Nyertes: {}".format(self.players[0].name), 40, Color.WHITE, (window.get_width()/2, 60))
         else:
-            Utils.text_printer(window, "{}: {}".format(self.players[0].name, self.players[0].score), 50, (200, 200, 200), (window.get_width()/2, 60))
+            Utils.text_printer(window, "{}: {}".format(self.players[0].name, self.players[0].score), 50, Color.WHITE, (window.get_width()/2, 60))
 
-        Utils.text_printer(window, "TOPLISTA", 60, (100,120,100), (window.get_width()/2, 120))
+        Utils.text_printer(window, "TOPLISTA", 60, Color.TEXT, (window.get_width()/2, 120))
 
         y = 180
         i = 0
         while i < 10 and i < len(self.highscores):
-            Utils.text_printer(window, "{} - {}".format(self.highscores[i].name, self.highscores[i].score), 25, (100,120,100), (window.get_width()/2, y))
+            Utils.text_printer(window, "{} - {}".format(self.highscores[i].name, self.highscores[i].score), 25, Color.TEXT, (window.get_width()/2, y))
             y += 40
             i += 1
 

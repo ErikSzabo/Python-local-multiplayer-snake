@@ -1,5 +1,6 @@
 import pygame
 from utils import Utils, Image
+from game.enums import Color
 
 
 class Menu:
@@ -7,24 +8,23 @@ class Menu:
         self.surface = pygame.Surface((800, 600))
         self.full_exit = False
         self.current_position = 0  # legfelső elem
-        self.max_position = 4 # legalsó elem
+        self.max_position = 4      # legalsó elem
         self.player_number_pos = 1
         self.player_num = 2
         self.player_names = ["", ""]
 
     def redraw(self, window):
-        window.fill((20,20,20))
-        self.surface.fill((20,20,20))
-        color = (100,100,100)
-        colors = [(100,100,100), (100,100,100), (100,100,100), (100,100,100), (100,100,100)]
+        window.fill(Color.BACKGROUND)
+        self.surface.fill(Color.BACKGROUND)
+        colors = [Color.TEXT] * 5
         for i in range(len(colors)):
             if i == self.current_position:
                 if self.player_num == 2:
-                    colors[i] = (138,127,64)
+                    colors[i] = Color.ORANGE
                 else:
-                    colors[i] = (138,127,64)
+                    colors[i] = Color.ORANGE
 
-        Utils.text_printer(self.surface, "Python Snake", 80, (64,138,74), (self.surface.get_width()/2, 55))
+        Utils.text_printer(self.surface, "Python Snake", 80, Color.GREEN, (self.surface.get_width()/2, 55))
 
         Utils.text_printer(self.surface, "Játék", 60, colors[0], (self.surface.get_width()/2, 175))
 
@@ -36,7 +36,7 @@ class Menu:
         center_rect = Image.menu_right_arrow.get_rect(center=(self.surface.get_width()/2 + 200, 270))
         self.surface.blit(Image.menu_right_arrow, center_rect)
 
-        Utils.text_printer(self.surface, "Játékos nevek...", 20, color, (self.surface.get_width()/2, 330))
+        Utils.text_printer(self.surface, "Játékos nevek...", 20, Color.TEXT, (self.surface.get_width()/2, 330))
 
         centery = 380
         for i in range(self.player_num):
