@@ -37,8 +37,9 @@ def start_menu(menu, display):
     menu: létrehozott menü
     display: kijelzőt tároló objektum
     """
+
+    menu.redraw(display.window)
     while True:
-        menu.redraw(display.window)
         event = pygame.event.wait()
         if event.type == pygame.KEYDOWN:
             menu.name_input_handler(event.key, display.window, event.unicode)

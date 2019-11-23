@@ -1,6 +1,7 @@
 import pygame
 from utils import Utils, Image
 
+
 class Menu:
     def __init__(self):
         self.surface = pygame.Surface((800, 600))
@@ -11,7 +12,7 @@ class Menu:
         self.player_num = 2
         self.player_names = ["", ""]
 
-    def redraw(self, window):        
+    def redraw(self, window):
         window.fill((20,20,20))
         self.surface.fill((20,20,20))
         color = (100,100,100)
@@ -46,7 +47,7 @@ class Menu:
             centery += 80
 
         Utils.text_printer(self.surface, "Kilépés", 60, colors[-1], (self.surface.get_width()/2, 540))
-        
+
         s_center_rect = self.surface.get_rect(center=(window.get_width()/2, window.get_height()/2))
         window.blit(self.surface, s_center_rect)
         pygame.display.update()
@@ -59,39 +60,42 @@ class Menu:
                     self.current_position = self.max_position
                 else:
                     self.current_position += 1
+                self.redraw(window)
         elif key == pygame.K_UP:
             if self.current_position > 0:
                 if self.player_num == 1 and self.current_position == self.max_position:
                     self.current_position -= 2
                 else:
                     self.current_position -= 1
+                self.redraw(window)
         elif key == pygame.K_RIGHT:
             if self.current_position == self.player_number_pos:
                 if self.player_num == 1:
                     self.player_num += 1
+                    self.redraw(window)
         elif key == pygame.K_LEFT:
             if self.current_position == self.player_number_pos:
                 if self.player_num == 2:
                     self.player_num -= 1
+                    self.redraw(window)
         elif key == pygame.K_RETURN:
             if self.current_position == 0:
                 return True
             elif self.current_position == self.max_position:
                 self.full_exit = True
                 return True
-        self.redraw(window)
         return False
 
     def name_input_handler(self, key, window, key_unicode = ""):
-        if key == pygame.K_BACKSPACE:
-            if self.current_position == 2:
-                self.player_names[0] = self.player_names[0][0:len(self.player_names[0])-1]
-            elif self.current_position == 3:
-                self.player_names[1] = self.player_names[1][0:len(self.player_names[1])-1]
-        else:
-            if self.current_position == 2:
+        if self.current_position == 2:
+            if key == pygame.K_BACKSPACE:
+                self.player_names[0] = self.player_names[0][0:len(self.player_names[0]) - 1]
+            else:
                 self.player_names[0] += key_unicode
-                self.redraw(window)
-            elif self.current_position == 3:
+            self.redraw(window)
+        elif self.current_position == 3:
+            if key == pygame.K_BACKSPACE:
+                self.player_names[1] = self.player_names[1][0:len(self.player_names[1]) - 1]
+            else:
                 self.player_names[1] += key_unicode
-        self.redraw(window)
+            self.redraw(window)
