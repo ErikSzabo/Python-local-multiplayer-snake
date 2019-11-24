@@ -104,21 +104,6 @@ class Image:
         ]
     ]
 
-    snake_rotate_parts = [
-        [
-            pygame.image.load("game/images/left_down.png"),
-            pygame.image.load("game/images/left_up.png"),
-            pygame.image.load("game/images/right_down.png"),
-            pygame.image.load("game/images/right_up.png")
-        ],
-        [
-            pygame.image.load("game/images/left2_down.png"),
-            pygame.image.load("game/images/left2_up.png"),
-            pygame.image.load("game/images/right2_down.png"),
-            pygame.image.load("game/images/right2_up.png")
-        ]
-    ]
-
     food_image = pygame.image.load("game/images/apple.png")
     super_food_image = pygame.image.load("game/images/super_apple.png")
     menu_left_arrow = pygame.image.load("menu/images/left_arrow.png")
@@ -136,8 +121,6 @@ class Image:
         for heads in Image.snake_heads:
             for i in range(len(heads)):
                 heads[i] = pygame.transform.scale(heads[i], (grid_size, grid_size))
-        for rotate_parts in Image.snake_rotate_parts:
-            for i in range(len(rotate_parts)):
-                rotate_parts[i] = pygame.transform.scale(rotate_parts[i], (grid_size, grid_size))
+
         Image.food_image = pygame.transform.scale(Image.food_image, (grid_size, grid_size))
         Image.super_food_image = pygame.transform.scale(Image.super_food_image, (grid_size, grid_size))

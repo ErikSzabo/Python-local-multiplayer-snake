@@ -26,7 +26,7 @@ def player_init(menu, display, grid_size):
     ]
     for i in range(menu.player_num):
         player = Snake(menu.player_names[i], starting_x[i], display.height / 2, Image.snake_heads[i],
-                       Image.snake_rotate_parts[i], colors[i], grid_size, control[i])
+                       colors[i], grid_size, control[i])
         players.append(player)
     return players
 
