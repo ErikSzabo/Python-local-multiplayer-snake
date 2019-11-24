@@ -4,7 +4,7 @@ from game.game import Game
 from game.snake import Snake
 from game.end import EndScreen
 from utils import Image, DisplayMonitor
-from game.enums import Color
+from game.constants import Color
 
 pygame.init()
 

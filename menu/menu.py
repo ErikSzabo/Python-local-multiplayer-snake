@@ -1,6 +1,6 @@
 import pygame
 from utils import Utils, Image
-from game.enums import Color
+from game.constants import Color
 
 
 class Menu:

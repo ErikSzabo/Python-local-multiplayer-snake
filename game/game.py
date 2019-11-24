@@ -2,7 +2,7 @@ import pygame
 import winsound
 from utils import Utils, Image
 from game.food import Food, SuperFood
-from game.enums import Color
+from game.constants import Color
 
 class Game:
     """Játékmenetet vezérlő osztály"""

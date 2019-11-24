@@ -1,5 +1,5 @@
 import pygame
-from game.enums import Color
+from game.constants import Color
 from utils import Utils, Stat
 
 

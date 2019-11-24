@@ -1,6 +1,6 @@
 from enum import IntEnum
 import pygame
-from game.enums import Direction
+from game.constants import Direction
 
 
 class Snake:
