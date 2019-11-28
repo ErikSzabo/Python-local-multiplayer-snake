@@ -5,7 +5,24 @@ from utils import Display
 
 
 class Snake:
-    """Játékosokért felelős osztály"""
+    """
+    Játékosokért felelős osztály
+    Attribútumok:
+        name: játákos neve
+        x: x koordinátája
+        y: y koordinátája
+        head_images: kígyó fejének képei
+        color: kígyó színe
+        score: pontszám
+        length: kígyó elemeinek darabszáma
+        direction: haladási irány
+        velocity: sebesség (pixelben)
+        key_pressed: nyomott-e gombot
+        is_lost: vesztett-e
+        control: irányító billentyűk
+        body_rects: kígyó testét alkotó téglalapok
+        rotate_points: kígyó forgáspontjai
+    """
 
     def __init__(self, name, x, y, head_images, color, control):
         self.name = name
