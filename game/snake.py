@@ -1,22 +1,22 @@
 from enum import IntEnum
 import pygame
-from game.constants import Direction
+from game.constants import Direction, Color
+from utils import Display
 
 
 class Snake:
     """Játékosokért felelős osztály"""
 
-    def __init__(self, name, x, y, head_images, color, size, control):
+    def __init__(self, name, x, y, head_images, color, control):
         self.name = name
         self.x = x
         self.y = y
         self.head_images = head_images
         self.color = color
-        self.size = size
         self.score = 0
         self.length = 3
         self.direction = Direction.DOWN
-        self.velocity = 3 + round(size / 20)
+        self.velocity = 3 + round(Display.grid_size / 20)
         self.key_pressed = False
         self.is_lost = False
         self.control = control
@@ -29,40 +29,46 @@ class Snake:
         score_breakpoints = [100, 90, 70, 50, 30, 20, 10]
         velocities = [10, 9, 8, 7, 6, 5, 4]
         for i in range(len(velocities)):
-            velocities[i] = round(velocities[i] + (self.size / 20))
+            velocities[i] = round(velocities[i] + (Display.grid_size / 20))
 
         for i in range(len(score_breakpoints)):
             if self.score >= score_breakpoints[i]:
                 self.velocity = velocities[i]
                 break
 
-    def detect_wall_collision(self, win_width, win_height, first_y):
-        """Visszatér igaz/hamis értékkel attől függően, hogy a játékos falnak ütközött-e"""
+    def detect_wall_collision(self, first_y):
+        """
+        Visszatér igaz/hamis értékkel attől függően, hogy a játékos falnak ütközött-e.
+        Paraméterek:
+            win_width: pálya szélessége
+            win_height: pálya magassága
+            first_y: az az y koordináta, ahol kezdődik a pálya
+        """
 
         if self.direction == Direction.LEFT:
             return self.x < 0
         elif self.direction == Direction.RIGHT:
-            return self.x + self.size > win_width
+            return self.x + Display.grid_size > Display.width
         elif self.direction == Direction.DOWN:
-            return self.y + self.size > win_height
+            return self.y + Display.grid_size > Display.height
         elif self.direction == Direction.UP:
             return self.y < first_y
 
     def detect_food_collision(self, apple):
         """
-        Visszatér igaz/hamis értékkel attől függően, hogy a játékos almának ütközött-e
+        Visszatér igaz/hamis értékkel attől függően, hogy a játékos almának ütközött-e.
         Paraméterek:
-        apple: alma, vagy szuper alma
+            apple: alma, vagy szuper alma
         """
 
-        head_rect = pygame.Rect(self.x, self.y, self.size, self.size)
-        apple_rect = pygame.Rect(apple.x, apple.y, apple.size, apple.size)
+        head_rect = pygame.Rect(self.x, self.y, Display.grid_size, Display.grid_size)
+        apple_rect = pygame.Rect(apple.x, apple.y, Display.grid_size, Display.grid_size)
         return head_rect.colliderect(apple_rect)
 
     def detect_self_collision(self):
-        """Visszatér igaz/hamis értékkel attől függően, hogy a játékos magába ütközött-e"""
+        """Visszatér igaz/hamis értékkel attől függően, hogy a játékos magába ütközött-e."""
 
-        head_rect = pygame.Rect(self.x, self.y, self.size, self.size)
+        head_rect = pygame.Rect(self.x, self.y, Display.grid_size, Display.grid_size)
         for body_rect in self.body_rects:
             if head_rect.colliderect(body_rect):
                 return True
@@ -70,13 +76,13 @@ class Snake:
 
     def detect_enemy_collision(self, enemy_snake):
         """
-        Visszatér igaz/hamis értékkel attől függően, hogy a játékos másik játékosba ütközött-e
+        Visszatér igaz/hamis értékkel attől függően, hogy a játékos másik játékosba ütközött-e.
         Paraméterek:
-        enemy_snake: Másik játékos
+            enemy_snake: másik játékos
         """
 
-        enemy_head_rect = pygame.Rect(enemy_snake.x, enemy_snake.y, self.size, self.size)
-        head_rect = pygame.Rect(self.x, self.y, self.size, self.size)
+        enemy_head_rect = pygame.Rect(enemy_snake.x, enemy_snake.y, Display.grid_size, Display.grid_size)
+        head_rect = pygame.Rect(self.x, self.y, Display.grid_size, Display.grid_size)
         if head_rect.colliderect(enemy_head_rect):
             return True
         for body_rect in enemy_snake.body_rects:
@@ -84,28 +90,29 @@ class Snake:
                 return True
         return False
 
-    def draw(self, window):
+    def draw(self):
         """
-        Kirajzolja a játékos kígyóját
+        Kirajzolja a kígyót.
         Paraméterek:
-        window: erre rajzol
+            window: kijelző surface amit a DisplayMonitor tárol
         """
 
-        window.blit(self.head_images[self.direction], (self.x, self.y))
+        Display.window.blit(self.head_images[self.direction], (self.x, self.y))
+
         for body_rect in self.body_rects:
-            pygame.draw.rect(window, self.color, body_rect)
+            pygame.draw.rect(Display.window, self.color, body_rect)
 
     def add_rotate_point(self, rotate_point):
         """
-        Hozzáad egy forgáspontot a játékos forgáspontjaihoz
+        Hozzáad egy forgáspontot a játékos forgáspontjaihoz.
         Paraméterek:
-        rotate_point: forgáspont
+            rotate_point: forgáspont
         """
 
         self.rotate_points.append(rotate_point)
 
     def get_reverse_direction(self):
-        """Visszatér a játékos ellenkező irányával"""
+        """Visszatér a játékos ellenkező irányával."""
 
         if self.direction == Direction.LEFT:
             return Direction.RIGHT
@@ -118,9 +125,9 @@ class Snake:
 
     def controlled_move(self, event):
         """
-        Elmozgatja a játékost irányítóbillentyűtől függően
+        Elmozgatja a játékost irányítóbillentyűtől függően.
         Paraméterek:
-        event: billentyű event
+            event: billentyű event
         """
 
         if event.key not in self.control or self.key_pressed:
@@ -136,13 +143,13 @@ class Snake:
             return
 
         if self.direction == Direction.LEFT:
-            self.x -= self.x - self.x // self.size * self.size
+            self.x -= self.x - self.x // Display.grid_size * Display.grid_size
         elif self.direction == Direction.RIGHT:
-            self.x = self.x // self.size * self.size + self.size
+            self.x = self.x // Display.grid_size * Display.grid_size + Display.grid_size
         elif self.direction == Direction.DOWN:
-            self.y = self.y // self.size * self.size + self.size
+            self.y = self.y // Display.grid_size * Display.grid_size + Display.grid_size
         elif self.direction == Direction.UP:
-            self.y -= self.y - self.y // self.size * self.size
+            self.y -= self.y - self.y // Display.grid_size * Display.grid_size
 
         rotate_point = RotatePoint(self.x, self.y, self.direction, Direction(new_direction))
         self.add_rotate_point(rotate_point)
@@ -152,7 +159,7 @@ class Snake:
         self.key_pressed = True
 
     def move(self):
-        """Mozgatja a játékost a jelenlegi irányába"""
+        """Mozgatja a játékost a jelenlegi irányába."""
 
         #####################
         ### fej mozgatása ###
@@ -174,7 +181,7 @@ class Snake:
         # 2. Felvesszük utolsó forgáspontként a kígyó fejét, mivel innen indulunk visszafele a rajzolásban
         self.rotate_points.append(RotatePoint(self.x, self.y, self.direction))
         # 3. csak addig építjük tovább a testét amíg kell
-        length_in_pixels = self.length * self.size
+        length_in_pixels = self.length * Display.grid_size
 
         # 4. Visszafele haladva a forgáspontok iránya mentén haladva elkezdjük felépíteni a kígyó testét téglalapokból
         i = len(self.rotate_points) - 1
@@ -188,22 +195,22 @@ class Snake:
             # Iránytól, és maradék hossztól függően megépítjük a téglalapokat
             if to_direction == Direction.LEFT:
                 is_longer = length_in_pixels > start_x - end_x
-                body_rect = pygame.Rect(end_x, end_y, start_x - end_x, self.size) if is_longer else pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, self.size)
+                body_rect = pygame.Rect(end_x, end_y, start_x - end_x, Display.grid_size) if is_longer else pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, Display.grid_size)
                 length_in_pixels -= start_x - end_x
                 self.body_rects.append(body_rect)
             elif to_direction == Direction.RIGHT:
                 is_longer = length_in_pixels > end_x - start_x
-                body_rect = pygame.Rect(start_x + self.size, start_y, end_x - start_x, self.size) if is_longer else pygame.Rect(start_x + self.size, start_y, length_in_pixels, self.size)
+                body_rect = pygame.Rect(start_x + Display.grid_size, start_y, end_x - start_x, Display.grid_size) if is_longer else pygame.Rect(start_x + Display.grid_size, start_y, length_in_pixels, Display.grid_size)
                 length_in_pixels -= end_x - start_x
                 self.body_rects.append(body_rect)
             elif to_direction == Direction.DOWN:
                 is_longer = length_in_pixels > end_y - start_y
-                body_rect = pygame.Rect(start_x, start_y + self.size, self.size, end_y - start_y) if is_longer else pygame.Rect(start_x, start_y + self.size, self.size, length_in_pixels)
+                body_rect = pygame.Rect(start_x, start_y + Display.grid_size, Display.grid_size, end_y - start_y) if is_longer else pygame.Rect(start_x, start_y + Display.grid_size, Display.grid_size, length_in_pixels)
                 length_in_pixels -= end_y - start_y
                 self.body_rects.append(body_rect)
             elif to_direction == Direction.UP:
                 is_longer = length_in_pixels > start_y - end_y
-                body_rect = pygame.Rect(end_x, end_y, self.size, start_y - end_y) if is_longer else pygame.Rect(end_x, end_y - length_in_pixels + start_y - end_y, self.size, length_in_pixels)
+                body_rect = pygame.Rect(end_x, end_y, Display.grid_size, start_y - end_y) if is_longer else pygame.Rect(end_x, end_y - length_in_pixels + start_y - end_y, Display.grid_size, length_in_pixels)
                 length_in_pixels -= start_y - end_y
                 self.body_rects.append(body_rect)
             i -= 1
@@ -213,13 +220,13 @@ class Snake:
             start_x, start_y = self.rotate_points[i].x, self.rotate_points[i].y
             to_direction = self.rotate_points[i].backward_direction
             if to_direction == Direction.LEFT:
-                body_rect = pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, self.size)
+                body_rect = pygame.Rect(start_x - length_in_pixels, start_y, length_in_pixels, Display.grid_size)
             elif to_direction == Direction.RIGHT:
-                body_rect = pygame.Rect(start_x + self.size, start_y, length_in_pixels, self.size)
+                body_rect = pygame.Rect(start_x + Display.grid_size, start_y, length_in_pixels, Display.grid_size)
             elif to_direction == Direction.DOWN:
-                body_rect = pygame.Rect(start_x, start_y + self.size, self.size, length_in_pixels)
+                body_rect = pygame.Rect(start_x, start_y + Display.grid_size, Display.grid_size, length_in_pixels)
             elif to_direction == Direction.UP:
-                body_rect = pygame.Rect(start_x, start_y - length_in_pixels, self.size, length_in_pixels)
+                body_rect = pygame.Rect(start_x, start_y - length_in_pixels, Display.grid_size, length_in_pixels)
             self.body_rects.append(body_rect)
 
         # 6. A továbbiakban teljesen haszontalan forgáspontoktól megszabadulunk

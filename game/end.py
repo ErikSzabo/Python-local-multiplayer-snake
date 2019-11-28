@@ -4,7 +4,12 @@ from utils import Utils, Stat
 
 
 class EndScreen:
-    """Eredmény kijelző képernyőért felelős osztály"""
+    """
+    Eredmény kijelző képernyőért felelős osztály.
+    Attribútumok:
+        players: Snake objektumokból álló játékos lista
+        highscores: Stat objektumokból álló toplista
+    """
 
     def __init__(self, players):
         self.players = players
@@ -15,9 +20,9 @@ class EndScreen:
 
     def draw(self, window):
         """
-        Újra rajzolja az ablakot
+        Újra rajzolja az ablakot.
         Paraméterek:
-        window: pygame.Surface amire rajzol
+            window: pygame surface amire rajzolni kell
         """
 
         window.fill(Color.BACKGROUND)
@@ -49,11 +54,11 @@ class EndScreen:
 
     def __add_players_to_highscores(self):
         """
-        Ha a játékosok megfelelnek a követelményeknek akkor, hozzáadja őket a toplistához
+        Ha a játékosok megfelelnek a követelményeknek, akkor hozzáadja őket a toplistához.
         Követelmények:
-        Ha még nincs 10 ember a toplistában akkor: pontszám > 0
-        Ha van már 10 ember akkor: pontszám > 0 és az utolsónál több pont
-        Ha már benne van a toplistában: Az előzőnél nagyobb pontszám
+            Ha még nincs 10 ember a toplistában akkor: pontszám > 0
+            Ha van már 10 ember akkor: pontszám > 0 és az utolsónál több pont
+            Ha már benne van a toplistában: Az előzőnél nagyobb pontszám
         """
         for player in self.players:
             already_in = False

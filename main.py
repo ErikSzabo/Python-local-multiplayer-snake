@@ -3,49 +3,49 @@ from menu.menu import Menu
 from game.game import Game
 from game.snake import Snake
 from game.end import EndScreen
-from utils import Image, DisplayMonitor
+from utils import Image, Display
 from game.constants import Color
 
 pygame.init()
 
 
-def player_init(menu, display, grid_size):
+def player_init(menu):
     """
     Visszaadja a létrehozott játékosok listáját
     Paraméterek:
-    menu: létrehozott menü
-    display: kijelzőt tároló objektum
-    grid_size: négyzetrács mérete
+        menu: létrehozott menü
     """
     players = []
-    starting_x = [display.width - grid_size * 5, grid_size * 5]
+    starting_x = [Display.width - Display.grid_size * 5, Display.grid_size * 5]
     colors = [Color.GREEN, Color.ORANGE]
     control = [
         [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP],
         [pygame.K_a, pygame.K_d, pygame.K_s, pygame.K_w]
     ]
     for i in range(menu.player_num):
-        player = Snake(menu.player_names[i], starting_x[i], display.height / 2, Image.snake_heads[i],
-                       colors[i], grid_size, control[i])
+        player = Snake(menu.player_names[i], starting_x[i], Display.height / 2, Image.snake_heads[i],
+                       colors[i], control[i])
         players.append(player)
     return players
 
 
-def start_menu(menu, display):
+def start_menu(menu):
     """
     Elindítja menüt
     Paraméterek:
-    menu: létrehozott menü
-    display: kijelzőt tároló objektum
+        menu: létrehozott menü
     """
 
-    menu.redraw(display.window)
+    menu.redraw()
     while True:
         event = pygame.event.wait()
         if event.type == pygame.KEYDOWN:
-            menu.name_input_handler(event.key, display.window, event.unicode)
-            if menu.navigation(event.key, display.window):
+            menu.name_input_handler(event.key, event.unicode)
+            if menu.navigation(event.key):
                 break
+        if event.type == pygame.QUIT:
+            menu.full_exit = True
+            break
 
 
 def enter_listener() :
@@ -54,42 +54,42 @@ def enter_listener() :
     while True:
         event = pygame.event.wait()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-            break
+            return False
+        if event.type == pygame.QUIT:
+            return True
 
 
 def main():
     """Program főkontrollere ami elindítja a játékot"""
 
-    grid_size = 30
-    if grid_size != 20:
-        Image.scale_game_images(grid_size)
-
     # Alap inicializáció
     pygame.mouse.set_visible(False)
-    display = DisplayMonitor(grid_size)
+    Display.init(30, 990, 780)
     menu = Menu()
 
     while True:
         # Menü kezelő
-        start_menu(menu, display)
+        start_menu(menu)
 
         # Játék indul ha nem kilépést választottunk
         if menu.full_exit:
             break
 
         # Player lista elkésztése a menü adatai és a MenuData class alapértékei alapján
-        players = player_init(menu, display, grid_size)
+        players = player_init(menu)
 
         # Játék elindítása
-        game = Game(players, display, grid_size)
-        game.start_game(display)
+        game = Game(players)
+        if game.start():   # Visszatér True értékkel ha a felhasználó megnyomta az X-et
+            break
 
         # Amint vége a játéknak az EndScreen következik
         endscreen = EndScreen(game.players)
-        endscreen.draw(display.window)
+        endscreen.draw(Display.window)
 
         # Folyamatosan várunk az enter billenytu lenyomására majd visszatérünk a menübe
-        enter_listener()
+        if enter_listener():   # Visszatér True értékkel ha a felhasználó megnyomta az X-et
+            break
 
 
 main()

@@ -3,23 +3,56 @@ import pygame
 
 class Stat:
     """
-    Toplista elkészítéséhez használatos
-    Nevet és pontszámot tárol
+    Toplista elemeit lehet vele létrehozni.
+    Attribútumok:
+        name: játékos neve
+        score: játékos pontszáma
     """
+
     def __init__(self, name, score):
         self.name = name
         self.score = score
 
 
-class DisplayMonitor:
-    """Kijelző ablakról tartalmaz minden szükséges információt"""
+class Display:
+    """
+    Tárol minden szügséges adatot a kijelzőről.
+    Osztály változók:
+        window: pygame display
+        real_width: valódi szélessége az ablaknak
+        real_height: valódi magassága az ablaknak
+        width: a pálya szélessége (négyzetrácsozástól függ)
+        height: a pálya magassága (négyzetrácsozástól függ)
+    """
 
-    def __init__(self, grid_size):
-        self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.real_width = self.window.get_width()
-        self.real_height = self.window.get_height()
-        self.width = self.real_width // grid_size * grid_size
-        self.height = self.real_height // grid_size * grid_size
+    grid_size = None
+    window = None
+    real_width = None
+    real_height = None
+    width = None
+    height = None
+
+    @staticmethod
+    def init(grid_size=30, width=800, height=600, full_screen=False):
+        """
+        Inicializálja a kijelzőt, ha nincs megadott paraméter, akkor az alapértelmezett értékeket használja.
+        Paraméterek:
+            grid_size: négyzetrácsozás mérete
+            width: ablak szélessége
+            height: ablak magassága
+            full_screen: teljes képernyős vagy nem
+        """
+
+        if grid_size >= 20 and width >= 800 and height >= 600:
+            Display.grid_size = grid_size
+            Display.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN) if full_screen else pygame.display.set_mode((width, height))
+            Display.real_width = Display.window.get_width()
+            Display.real_height = Display.window.get_height()
+            Display.width = Display.real_width // grid_size * grid_size
+            Display.height = Display.real_height // grid_size * grid_size
+            Image.scale_game_images(grid_size)
+        else:
+            raise ValueError("Grid min. 20px\nSzélesség min. 800px\nMagasság min. 600px")
 
 
 class Utils:
@@ -27,13 +60,13 @@ class Utils:
     @staticmethod
     def text_printer(surface, text, font_size, color, center_coords):
         """
-        Kirajzol adott szöveget adott mérettel, adott középponti koordinátákra adott színnel
+        Kirajzol adott szöveget, adott mérettel, adott középponti koordinátákra, adott színnel.
         Paraméterek:
-        surface: pygame.Surface
-        text: kiiratandó szöveg
-        font_size: szöveg mérete
-        color: szöveg színe
-        center_coords: szöveg középponti koordinátája
+            surface: pygame surface amire rajzolni kell
+            text: kiiratandó szöveg
+            font_size: szöveg mérete
+            color: szöveg színe
+            center_coords: szöveg középponti koordinátája
         """
         font = pygame.font.Font("retro.ttf", font_size)
         text = font.render(text, 1, color)
@@ -43,12 +76,13 @@ class Utils:
     @staticmethod
     def input_box(surface, width, height, centery, color):
         """
-        Létrehoz egy dobozt/téglalapot amit az adott surface-hez képest vízszintesen középre igazít
-        surface: pygame.Surface
-        width: kívánt szélesség
-        height: kívánt magasság
-        centery: középponti y koordináta
-        color: szín
+        Létrehoz egy dobozt/téglalapot amit az adott surface-hez képest vízszintesen középre igazít.
+        Paraméterek:
+            surface: pygame surface amire rajzolni kell
+            width: kívánt szélesség
+            height: kívánt magasság
+            centery: középponti y koordináta
+            color: szín
         """
         input_box = pygame.Rect(0, 0, width, height)
         input_box.centerx = surface.get_width() / 2
@@ -57,7 +91,7 @@ class Utils:
 
     @staticmethod
     def load_highscores():
-        """Visszatér a fájlból betöltött toplistával"""
+        """Visszatér a highscores.txt fájlból betöltött toplistával."""
 
         highscores = []
         try:
@@ -75,9 +109,9 @@ class Utils:
     @staticmethod
     def save_highscores(highscores):
         """
-        Kapott listát fájlba menti
+        Kapott listát a highscores.txt fájlba menti.
         Paraméterek:
-        highscores: Stat objektumokból álló lista
+            highscores: Stat objektumokból álló lista
         """
         with open("highscores.txt", 'w') as f:
             i = 0
@@ -87,7 +121,7 @@ class Utils:
 
 
 class Image:
-    """Játékban használt képek statikus tárolója"""
+    """Játékban használt képek statikus tárolója."""
 
     snake_heads = [
         [
@@ -114,9 +148,9 @@ class Image:
     @staticmethod
     def scale_game_images(grid_size):
         """
-        Átméretezi a játékban használt képeket a négyzetrács méretének megfelelően
+        Átméretezi a játékban használt képeket a négyzetrács méretének megfelelően.
         Paraméterek:
-        grid_size: négyzetrács mérete
+            grid_size: négyzetrács mérete
         """
         for heads in Image.snake_heads:
             for i in range(len(heads)):
