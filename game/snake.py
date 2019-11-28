@@ -151,7 +151,7 @@ class Snake:
         elif self.direction == Direction.UP:
             self.y -= self.y - self.y // Display.grid_size * Display.grid_size
 
-        rotate_point = RotatePoint(self.x, self.y, self.direction, Direction(new_direction))
+        rotate_point = RotatePoint(self.x, self.y, self.direction)
         self.add_rotate_point(rotate_point)
 
         self.direction = Direction(new_direction)
@@ -239,11 +239,10 @@ class Snake:
 class RotatePoint:
     """Forgáspontok létrehozásáért felelős osztály"""
 
-    def __init__(self, x, y, forward_direction, backward_direction=None):
+    def __init__(self, x, y, forward_direction):
         self.x = x
         self.y = y
         self.backward_direction = forward_direction
-        self.forward_direction = forward_direction
         self.reverse()
 
     def reverse(self):
