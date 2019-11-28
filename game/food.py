@@ -58,11 +58,7 @@ class Food:
         self.y = y
 
     def draw(self):
-        """
-        Kirajzolja az almát a képernyőre.
-        Paraméterek:
-            window: pygame surface amire rajzolni kell
-        """
+        """Kirajzolja az almát a képernyőre."""
 
         Display.window.blit(self.image, (self.x, self.y))
 
