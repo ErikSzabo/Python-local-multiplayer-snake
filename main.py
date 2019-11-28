@@ -85,7 +85,7 @@ def main():
 
         # Amint vége a játéknak az EndScreen következik
         endscreen = EndScreen(game.players)
-        endscreen.draw(Display.window)
+        endscreen.draw()
 
         # Folyamatosan várunk az enter billenytu lenyomására majd visszatérünk a menübe
         if enter_listener():   # Visszatér True értékkel ha a felhasználó megnyomta az X-et
