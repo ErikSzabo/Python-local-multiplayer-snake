@@ -73,7 +73,6 @@ class SuperFood(Food):
     Attribútumok:
         x: x koordináta
         y: y koordináta
-        size: méret (size x size négyzet)
         valid_xs: érvényes x koordináták ahol megjelenhet az alma
         valid_ys: érvényes y koordináták ahol megjelenhet az alma
         visible: látható-e
