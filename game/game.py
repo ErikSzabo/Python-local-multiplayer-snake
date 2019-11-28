@@ -33,11 +33,7 @@ class Game:
             self.highscore = highscores[0].score
 
     def start(self):
-        """
-        Játékmenet vezérlője.
-        Paraméterek:
-            display: kijelzőt tároló DisplayMonitor objektum
-        """
+        """Játékmenet vezérlője."""
 
         end = False
         timer = pygame.time.Clock()
@@ -119,11 +115,7 @@ class Game:
             self.redraw()
 
     def redraw(self):
-        """
-        Újra rajzolja a képernyőt a játékállásnak megfelelően.
-        Paraméterek:
-            display: kijelzőt tároló DisplayMonitor objektum
-        """
+        """Újra rajzolja a képernyőt a játékállásnak megfelelően."""
 
         Display.window.fill((20,20,20))
 

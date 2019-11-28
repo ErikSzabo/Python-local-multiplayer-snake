@@ -43,7 +43,7 @@ class Display:
             full_screen: teljes képernyős vagy nem
         """
 
-        if grid_size >= 20 and width >= 800 and height >= 600:
+        if grid_size >= 30 and width >= 800 and height >= 600:
             Display.grid_size = grid_size
             Display.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN) if full_screen else pygame.display.set_mode((width, height))
             Display.real_width = Display.window.get_width()

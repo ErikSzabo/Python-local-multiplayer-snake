@@ -26,11 +26,8 @@ class Menu:
         self.player_names = ["", ""]
 
     def redraw(self):
-        """
-        Újra rajzolja menüt.
-        Paraméterek:
-            window: DisplayMonitor objektum ami tárolja az információkat a kijelzőről
-        """
+        """Újra rajzolja menüt."""
+
         Display.window.fill(Color.BACKGROUND)
         self.surface.fill(Color.BACKGROUND)
         colors = [Color.TEXT] * 5
@@ -76,7 +73,6 @@ class Menu:
         Billentyü leütés függvényében navigál a menüben.
         Paraméterek:
             key: pygame event lenyomott billentyűje
-            window: DisplayMonitor objektum ami tárolja az információkat a kijelzőről
         """
 
         if key == pygame.K_DOWN:
@@ -117,7 +113,6 @@ class Menu:
         reprezentációjával bővül a megfelelő játékos név.
         Paraméterek:
             key: pygame event lenyomott billentyűje
-            window: DisplayMonitor objektum ami tárolja az információkat a kijelzőről
             key_unicode: leütött karakter szöveges reprezentációja
         """
 

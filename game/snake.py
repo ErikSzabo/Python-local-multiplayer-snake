@@ -40,8 +40,6 @@ class Snake:
         """
         Visszatér igaz/hamis értékkel attől függően, hogy a játékos falnak ütközött-e.
         Paraméterek:
-            win_width: pálya szélessége
-            win_height: pálya magassága
             first_y: az az y koordináta, ahol kezdődik a pálya
         """
 
@@ -91,11 +89,7 @@ class Snake:
         return False
 
     def draw(self):
-        """
-        Kirajzolja a kígyót.
-        Paraméterek:
-            window: kijelző surface amit a DisplayMonitor tárol
-        """
+        """Kirajzolja a kígyót."""
 
         Display.window.blit(self.head_images[self.direction], (self.x, self.y))
 
