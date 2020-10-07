@@ -3,7 +3,8 @@ from menu.menu import Menu
 from game.game import Game
 from game.snake import Snake
 from game.end import EndScreen
-from utils import Image, Display
+from images import Image
+from display import Display
 from game.constants import Color
 
 pygame.init()

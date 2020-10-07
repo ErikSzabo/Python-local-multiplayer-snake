@@ -1,7 +1,6 @@
-from random import randint
 import pygame
-
-from utils import Display
+from random import randint
+from display import Display
 
 
 class Food:

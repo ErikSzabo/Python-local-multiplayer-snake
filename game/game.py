@@ -1,6 +1,8 @@
 import pygame
 import winsound
-from utils import Utils, Image, Display
+from utils import text_printer, load_highscores
+from images import Image
+from display import Display
 from game.food import Food, SuperFood
 from game.constants import Color
 
@@ -28,7 +30,7 @@ class Game:
         
         self.food.recreate(self.players, self.super_food)
         
-        highscores = Utils.load_highscores()
+        highscores = load_highscores()
         if highscores:
             self.highscore = highscores[0].score
 
@@ -134,9 +136,9 @@ class Game:
        
         x = [Display.real_width/4 * 3, Display.real_width/4]
         for i in range(len(self.players)):
-            Utils.text_printer(Display.window, "{}: {}".format(self.players[i].name, self.players[i].score), 30, self.players[i].color, (x[i], 35))
+            text_printer(Display.window, "{}: {}".format(self.players[i].name, self.players[i].score), 30, self.players[i].color, (x[i], 35))
             
-        Utils.text_printer(Display.window, "HIGHSCORE", 30, Color.WHITE, (Display.real_width / 2, 20))
-        Utils.text_printer(Display.window, str(self.highscore), 30, Color.WHITE, (Display.real_width / 2, 50))
+        text_printer(Display.window, "HIGHSCORE", 30, Color.WHITE, (Display.real_width / 2, 20))
+        text_printer(Display.window, str(self.highscore), 30, Color.WHITE, (Display.real_width / 2, 50))
 
         pygame.display.update()

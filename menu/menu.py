@@ -1,5 +1,7 @@
 import pygame
-from utils import Utils, Image, Display
+from images import Image
+from display import Display
+from utils import text_printer, input_box
 from game.constants import Color
 
 
@@ -38,31 +40,31 @@ class Menu:
                 else:
                     colors[i] = Color.ORANGE
 
-        Utils.text_printer(self.surface, "Python Snake", 80, Color.GREEN, (self.surface.get_width() / 2, 55))
+        text_printer(self.surface, "Python Snake", 80, Color.GREEN, (self.surface.get_width() / 2, 55))
 
-        Utils.text_printer(self.surface, "Játék", 60, colors[0], (self.surface.get_width() / 2, 175))
+        text_printer(self.surface, "Játék", 60, colors[0], (self.surface.get_width() / 2, 175))
 
         center_rect = Image.menu_left_arrow.get_rect(center=(self.surface.get_width() / 2 - 200, 270))
         self.surface.blit(Image.menu_left_arrow, center_rect)
 
-        Utils.text_printer(self.surface, "{}".format(self.player_num), 60, colors[1],
+        text_printer(self.surface, "{}".format(self.player_num), 60, colors[1],
                            (self.surface.get_width() / 2, 270))
 
         center_rect = Image.menu_right_arrow.get_rect(center=(self.surface.get_width() / 2 + 200, 270))
         self.surface.blit(Image.menu_right_arrow, center_rect)
 
-        Utils.text_printer(self.surface, "Játékos nevek...", 20, Color.TEXT, (self.surface.get_width() / 2, 330))
+        text_printer(self.surface, "Játékos nevek...", 20, Color.TEXT, (self.surface.get_width() / 2, 330))
 
         centery = 380
         for i in range(self.player_num):
-            Utils.input_box(self.surface, 300, 60, centery, colors[i + 2])
-            Utils.text_printer(self.surface, self.player_names[i], 20, (0, 0, 0),
+            input_box(self.surface, 300, 60, centery, colors[i + 2])
+            text_printer(self.surface, self.player_names[i], 20, (0, 0, 0),
                                (self.surface.get_width() / 2, centery))
             center_rect = Image.menu_control[i].get_rect(center=(self.surface.get_width() / 2 - 110, centery))
             self.surface.blit(Image.menu_control[i], center_rect)
             centery += 80
 
-        Utils.text_printer(self.surface, "Kilépés", 60, colors[-1], (self.surface.get_width() / 2, 540))
+        text_printer(self.surface, "Kilépés", 60, colors[-1], (self.surface.get_width() / 2, 540))
 
         s_center_rect = self.surface.get_rect(center=(Display.window.get_width() / 2, Display.window.get_height() / 2))
         Display.window.blit(self.surface, s_center_rect)

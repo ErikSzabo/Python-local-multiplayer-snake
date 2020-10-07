@@ -1,7 +1,7 @@
 from enum import IntEnum
 import pygame
 from game.constants import Direction, Color
-from utils import Display
+from display import Display
 
 
 class Snake:

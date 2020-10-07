@@ -1,6 +1,8 @@
 import pygame
 from game.constants import Color
-from utils import Utils, Stat, Display
+from utils import Stat, text_printer, load_highscores, save_highscores
+from images import Image
+from display import Display
 
 
 class EndScreen:
@@ -13,10 +15,10 @@ class EndScreen:
 
     def __init__(self, players):
         self.players = players
-        self.highscores = Utils.load_highscores()
+        self.highscores = load_highscores()
         self.__add_players_to_highscores()
         self.highscores.sort(key=lambda highscores: highscores.score, reverse=True)
-        Utils.save_highscores(self.highscores)
+        save_highscores(self.highscores)
 
     def draw(self):
         """Újra rajzolja az ablakot."""
@@ -26,23 +28,23 @@ class EndScreen:
         if len(self.players) > 1:
             if self.players[0].is_lost and self.players[1].is_lost:
                 if self.players[0].score == self.players[1].score:
-                    Utils.text_printer(Display.window, "Döntetlen!", 40, Color.WHITE, (Display.real_width/2, 60))
+                    text_printer(Display.window, "Döntetlen!", 40, Color.WHITE, (Display.real_width/2, 60))
                 else:
                     name = self.players[0].name if self.players[0].score > self.players[1].score else self.players[1].name
-                    Utils.text_printer(Display.window, "Nyertes: {}".format(name), 40, Color.WHITE, (Display.real_width/ 2, 60))
+                    text_printer(Display.window, "Nyertes: {}".format(name), 40, Color.WHITE, (Display.real_width/ 2, 60))
             elif self.players[0].is_lost:
-                Utils.text_printer(Display.window, "Nyertes: {}".format(self.players[1].name), 40, Color.WHITE, (Display.real_width/2, 60))
+                text_printer(Display.window, "Nyertes: {}".format(self.players[1].name), 40, Color.WHITE, (Display.real_width/2, 60))
             elif self.players[1].is_lost:
-                Utils.text_printer(Display.window, "Nyertes: {}".format(self.players[0].name), 40, Color.WHITE, (Display.real_width/2, 60))
+                text_printer(Display.window, "Nyertes: {}".format(self.players[0].name), 40, Color.WHITE, (Display.real_width/2, 60))
         else:
-            Utils.text_printer(Display.window, "{}: {}".format(self.players[0].name, self.players[0].score), 50, Color.WHITE, (Display.real_width/2, 60))
+            text_printer(Display.window, "{}: {}".format(self.players[0].name, self.players[0].score), 50, Color.WHITE, (Display.real_width/2, 60))
 
-        Utils.text_printer(Display.window, "TOPLISTA", 60, Color.TEXT, (Display.real_width/2, 120))
+        text_printer(Display.window, "TOPLISTA", 60, Color.TEXT, (Display.real_width/2, 120))
 
         y = 180
         i = 0
         while i < 10 and i < len(self.highscores):
-            Utils.text_printer(Display.window, "{} - {}".format(self.highscores[i].name, self.highscores[i].score), 25, Color.TEXT, (Display.real_width/2, y))
+            text_printer(Display.window, "{} - {}".format(self.highscores[i].name, self.highscores[i].score), 25, Color.TEXT, (Display.real_width/2, y))
             y += 40
             i += 1
 
