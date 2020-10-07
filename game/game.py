@@ -66,7 +66,7 @@ class Game:
                 if player.detect_self_collision() or player.detect_wall_collision(self.field_start_y):
                     player.is_lost = True
                     end = True
-                    winsound.PlaySound("sounds/dead.wav", 1)
+                    winsound.PlaySound("assets/sounds/dead.wav", 1)
     
                 # új highscore beállitása ha valamelyik player meghaladta az eddigi legmagasabbat
                 if player.score > self.highscore:
@@ -77,14 +77,14 @@ class Game:
                     self.food.recreate(self.players, self.super_food)
                     player.score += 1
                     player.length += 1
-                    winsound.PlaySound("sounds/eat.wav", 1)
+                    winsound.PlaySound("assets/sounds/eat.wav", 1)
 
                 # Szuper alma felvétel kezelése
                 if player.detect_food_collision(self.super_food):
                     player.score += 5
                     player.length += 1
                     self.super_food.handle_collision()
-                    winsound.PlaySound("sounds/eat.wav", 1)
+                    winsound.PlaySound("assets/sounds/eat.wav", 1)
 
                 # Alapértékre állítás, nem nyomott irányváltoztató gombot
                 player.key_pressed = False
@@ -99,7 +99,7 @@ class Game:
                     if self.players[i].detect_enemy_collision(self.players[j]):
                         self.players[i].is_lost = True
                         end = True
-                        winsound.PlaySound("sounds/dead.wav", 1)
+                        winsound.PlaySound("assets/sounds/dead.wav", 1)
                     j -= 1
 
             # Szuper alma megfelelő számlálójának növelése

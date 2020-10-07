@@ -68,7 +68,7 @@ class Utils:
             color: szöveg színe
             center_coords: szöveg középponti koordinátája
         """
-        font = pygame.font.Font("retro.ttf", font_size)
+        font = pygame.font.Font("assets/fonts/retro.ttf", font_size)
         text = font.render(text, 1, color)
         center_rect = text.get_rect(center=center_coords)
         surface.blit(text, center_rect)
@@ -125,25 +125,25 @@ class Image:
 
     snake_heads = [
         [
-            pygame.image.load("game/images/head1_left.png"),
-            pygame.image.load("game/images/head1_right.png"),
-            pygame.image.load("game/images/head1_down.png"),
-            pygame.image.load("game/images/head1_up.png")
+            pygame.image.load("assets/images/head1_left.png"),
+            pygame.image.load("assets/images/head1_right.png"),
+            pygame.image.load("assets/images/head1_down.png"),
+            pygame.image.load("assets/images/head1_up.png")
         ],
         [
-            pygame.image.load("game/images/head2_left.png"),
-            pygame.image.load("game/images/head2_right.png"),
-            pygame.image.load("game/images/head2_down.png"),
-            pygame.image.load("game/images/head2_up.png")
+            pygame.image.load("assets/images/head2_left.png"),
+            pygame.image.load("assets/images/head2_right.png"),
+            pygame.image.load("assets/images/head2_down.png"),
+            pygame.image.load("assets/images/head2_up.png")
         ]
     ]
 
-    food_image = pygame.image.load("game/images/apple.png")
-    super_food_image = pygame.image.load("game/images/super_apple.png")
-    menu_left_arrow = pygame.image.load("menu/images/left_arrow.png")
-    menu_right_arrow = pygame.image.load("menu/images/right_arrow.png")
-    menu_control = [pygame.image.load("menu/images/arrow_control.png"),
-                    pygame.image.load("menu/images/wasd_control.png")]
+    food_image = pygame.image.load("assets/images/apple.png")
+    super_food_image = pygame.image.load("assets/images/super_apple.png")
+    menu_left_arrow = pygame.image.load("assets/images/left_arrow.png")
+    menu_right_arrow = pygame.image.load("assets/images/right_arrow.png")
+    menu_control = [pygame.image.load("assets/images/arrow_control.png"),
+                    pygame.image.load("assets/images/wasd_control.png")]
 
     @staticmethod
     def scale_game_images(grid_size):
