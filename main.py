@@ -4,7 +4,6 @@ from game.game import Game
 from game.snake import Snake
 from game.end import EndScreen
 from images import Image
-from display import Display
 from game.constants import Color
 
 pygame.init()
@@ -17,15 +16,11 @@ def player_init(menu):
         menu: létrehozott menü
     """
     players = []
-    starting_x = [Display.width - Display.grid_size * 5, Display.grid_size * 5]
     colors = [Color.GREEN, Color.ORANGE]
-    control = [
-        [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP],
-        [pygame.K_a, pygame.K_d, pygame.K_s, pygame.K_w]
+    control = [[pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP], [pygame.K_a, pygame.K_d, pygame.K_s, pygame.K_w]
     ]
     for i in range(menu.player_num):
-        player = Snake(menu.player_names[i], starting_x[i], Display.height / 2, Image.snake_heads[i],
-                       colors[i], control[i])
+        player = Snake(menu.player_names[i], 0, 0, Image.snake_heads[i], colors[i], control[i])
         players.append(player)
     return players
 
@@ -65,7 +60,6 @@ def main():
 
     # Alap inicializáció
     pygame.mouse.set_visible(False)
-    Display.init(30, 990, 780)
     menu = Menu()
 
     while True:

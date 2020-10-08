@@ -2,37 +2,26 @@ import pygame
 import winsound
 from utils import text_printer, load_highscores
 from images import Image
-from display import Display
+from display import window
+from surfaces import GameSurface, GameFieldSurface
 from game.food import Food, SuperFood
 from game.constants import Color
 
+
 class Game:
-    """
-    Játékmenetet vezérlő osztály
-    Attribútumok:
-        players: Snake objektumokból álló játékos lista
-        highscore: jelenlegi legmagasabb pontszám
-        field_start_y: az az y koordináta ahonnan keződik a pálya
-    """
-
     def __init__(self, players):
-        self.players = players
-        self.highscore = 0
-        self.field_start_y = 80
-        
-        for i in range(Display.height):
-            if (self.field_start_y + i) % Display.grid_size == 0:
-                self.field_start_y = self.field_start_y + i
-                break
-
-        self.food = Food(self.field_start_y, Image.food_image)
-        self.super_food = SuperFood(self.field_start_y, Image.super_food_image)
-        
-        self.food.recreate(self.players, self.super_food)
-        
         highscores = load_highscores()
-        if highscores:
-            self.highscore = highscores[0].score
+        self.highscore = highscores[0].score if highscores else 0
+        self.players = players
+        self.squares = (17, 15)
+        self.game_surface: GameSurface = GameSurface(window)
+        self.field: GameFieldSurface = GameFieldSurface(self.game_surface, self.squares)
+        self.food = Food(self.field, Image.food_image)
+        self.super_food = SuperFood(self.field, Image.super_food_image)
+        self.food.recreate(self.players, self.super_food, self.field.grid_size)
+        player_starting_xs = [self.field.grid_size * (i * 3 + 4) for i in range(len(self.players))]
+        for i in range(len(self.players)):
+            self.players[i].x = player_starting_xs[i]
 
     def start(self):
         """Játékmenet vezérlője."""
@@ -57,15 +46,15 @@ class Game:
                 
                 if event.type == pygame.KEYDOWN:
                     for player in self.players:
-                        player.controlled_move(event)
+                        player.controlled_move(event, self.field.grid_size)
 
             for player in self.players:
                 # ha nem mozdult gombokkal akkor mozdítsuk a kigyot a jelenlegi irányba tovább
                 if not player.key_pressed:
-                    player.move()
+                    player.move(self.field.grid_size)
                 
                 # ha saját magába, vagy a falba ment, akkor a játéknak vége
-                if player.detect_self_collision() or player.detect_wall_collision(self.field_start_y):
+                if player.detect_self_collision(self.field.grid_size) or player.detect_wall_collision(self.field):
                     player.is_lost = True
                     end = True
                     winsound.PlaySound("assets/sounds/dead.wav", 1)
@@ -75,14 +64,14 @@ class Game:
                     self.highscore = player.score 
 
                 # Alma felvétel kezelése
-                if player.detect_food_collision(self.food):
-                    self.food.recreate(self.players, self.super_food)
+                if player.detect_food_collision(self.food, self.field.grid_size):
+                    self.food.recreate(self.players, self.super_food, self.field.grid_size)
                     player.score += 1
                     player.length += 1
                     winsound.PlaySound("assets/sounds/eat.wav", 1)
 
                 # Szuper alma felvétel kezelése
-                if player.detect_food_collision(self.super_food):
+                if player.detect_food_collision(self.super_food, self.field.grid_size):
                     player.score += 5
                     player.length += 1
                     self.super_food.handle_collision()
@@ -98,7 +87,7 @@ class Game:
             if len(self.players) > 1:
                 j = len(self.players) - 1
                 for i in range(len(self.players)):
-                    if self.players[i].detect_enemy_collision(self.players[j]):
+                    if self.players[i].detect_enemy_collision(self.players[j], self.field.grid_size):
                         self.players[i].is_lost = True
                         end = True
                         winsound.PlaySound("assets/sounds/dead.wav", 1)
@@ -111,7 +100,7 @@ class Game:
             self.super_food.check_for_remove()
 
             # Ha még nincs szuper almánk és idő van, 30% eséllyel spawnol egy
-            self.super_food.check_for_spawn(self.players, self.food)      
+            self.super_food.check_for_spawn(self.players, self.food, self.field.grid_size)      
 
             # újra rajzoljuk a képernyőt
             self.redraw()
@@ -119,26 +108,18 @@ class Game:
     def redraw(self):
         """Újra rajzolja a képernyőt a játékállásnak megfelelően."""
 
-        Display.window.fill((20,20,20))
+        self.game_surface.redraw(self.players, self.highscore)
+        self.field.redraw()
 
-        for x in range(0, Display.width+1, Display.grid_size):
-            pygame.draw.line(Display.window, Color.LINE, (x, self.field_start_y), (x, Display.height))
-        for j in range(self.field_start_y, Display.height+1, Display.grid_size):
-            pygame.draw.line(Display.window, Color.LINE, (0, j), (Display.width, j))
-        
-        self.food.draw()
+        self.food.draw(self.field.surface)
         
         if self.super_food.visible:
-            self.super_food.draw()
+            self.super_food.draw(self.field.surface)
 
         for i in range(len(self.players)):
-            self.players[i].draw()
-       
-        x = [Display.real_width/4 * 3, Display.real_width/4]
-        for i in range(len(self.players)):
-            text_printer(Display.window, "{}: {}".format(self.players[i].name, self.players[i].score), 30, self.players[i].color, (x[i], 35))
-            
-        text_printer(Display.window, "HIGHSCORE", 30, Color.WHITE, (Display.real_width / 2, 20))
-        text_printer(Display.window, str(self.highscore), 30, Color.WHITE, (Display.real_width / 2, 50))
+            self.players[i].draw(self.field.surface)
+        
+        self.field.blit()
+        self.game_surface.scaled_blit_to_parent()
 
         pygame.display.update()
